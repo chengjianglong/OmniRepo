@@ -1,8 +1,49 @@
-# OmniRepo
+<p align="center">
+  <img src="Resources/AppIcon.png" width="128" alt="OmniRepo icon">
+</p>
+
+<h1 align="center">OmniRepo</h1>
+
+<p align="center"><b>Understand any codebase, model, or dataset in minutes — on your Mac and iPhone.</b></p>
+
+<p align="center">
+  <a href="https://github.com/chengjianglong/OmniRepo/releases/latest"><b>⬇ Download for macOS</b></a> ·
+  <a href="media/omnirepo-demo.mp4">▶ Watch the demo (28 s)</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#features">Features</a>
+</p>
+
+<p align="center">
+  <img src="media/omnirepo-demo.gif" width="900" alt="OmniRepo demo: discover a repository, read its README, run reports, check citations, and ask questions">
+</p>
 
 A native macOS 14+ SwiftUI app for analyzing local Git checkouts, remote Git repositories (GitHub, GitLab, Bitbucket, any https Git host), and Hugging Face models, datasets, and Spaces. It runs local models through Ollama (Recursive's Flint 40B by default, or any model you pull, such as Qwen or LFM), and can optionally use Claude and GPT through your subscription or an API key, including side-by-side comparisons. The Mac app has no third-party Swift dependencies; the iPhone app adds MLX Swift for its optional on-device model.
 
-## Run
+## Screenshots
+
+| | |
+|---|---|
+| <img src="media/01-welcome.png" alt="Welcome screen with Discover"><br>**Discover** — paste a GitHub or Hugging Face link, or browse popular and new AI repositories by topic. | <img src="media/02-readme-mermaid.png" alt="README with a Mermaid diagram"><br>**Read** — READMEs render like GitHub, Mermaid diagrams included; cited lines are highlighted. |
+| <img src="media/03-reports.png" alt="Full Report beside the README"><br>**Analyze** — architecture, code review, test gaps, and model card reports, saved so they aren't paid for twice. | <img src="media/05-code-citation.png" alt="Code with cited lines highlighted"><br>**Verify** — every `path:line` citation opens the code with those lines highlighted. |
+| <img src="media/04-ask.png" alt="Ask Me Anything conversation"><br>**Ask** — ask anything about the repository; answers cite files, and follow-ups remember the conversation. | <img src="media/06-web-inline.png" alt="Web page shown inside the repository view"><br>**Browse** — docs and videos from links open right in the repository view; Back returns to the README. |
+
+<p align="center">
+  <img src="media/ios-01-home.png" width="250" alt="iPhone home with Discover">
+  <img src="media/ios-03-readme-diagram.png" width="250" alt="iPhone README with diagram">
+  <img src="media/ios-04-ask.png" width="250" alt="iPhone Ask tab">
+</p>
+<p align="center"><i>On iPhone: Discover, GitHub-style READMEs, reports, and Ask — running on your paired Mac, with API keys, or with Qwen on the phone.</i></p>
+
+## Install
+
+1. Download **OmniRepo-x.y.z.dmg** from [Releases](https://github.com/chengjianglong/OmniRepo/releases/latest). It runs on macOS 14 or later, on Apple silicon and Intel Macs.
+2. Open the DMG and drag **OmniRepo** to **Applications**.
+3. The app isn't notarized by Apple yet, so the first time you open it macOS blocks it. Either right-click (Control-click) **OmniRepo** in Applications and choose **Open**, then **Open** again; or try to open it once, then go to **System Settings › Privacy & Security** and click **Open Anyway**. If macOS says the app "is damaged", run `xattr -dr com.apple.quarantine /Applications/OmniRepo.app` in Terminal and open it again.
+4. Pick a model: install [Ollama](https://ollama.com) for local models, sign in to the `claude` or `codex` command-line tools to use your Claude or ChatGPT subscription, or add an Anthropic or OpenAI API key in **Settings › Cloud Models**. Then paste a repository link and press **Full Report** or **Ask**.
+
+## Build and run from source
+
+> The Swift source isn't published in this repository yet; these steps apply to the full source tree. To just use the app, see [Install](#install).
 
 1. Install [Ollama](https://ollama.com) and start the Ollama application (or run `ollama serve`).
 2. Download the model: `ollama pull flint:40b`.
@@ -13,6 +54,11 @@ A native macOS 14+ SwiftUI app for analyzing local Git checkouts, remote Git rep
 The [official Ollama model](https://ollama.com/library/flint) is approximately 23 GB to download. Allow additional memory for runtime and context; sufficient free storage alone does not guarantee the model fits in memory. This app requests a 48K context and uses the model's own sampling settings. Flint is a reasoning model that can reason indefinitely before answering, so OmniRepo caps its reasoning at 6,144 tokens: if it has not finished by then, the app closes the reasoning block and the model writes its answer (up to 8,192 tokens) from what it has worked out. An analysis typically takes 2–3 minutes. Other models use Ollama's chat API with low reasoning effort when they support thinking. Model installation and server startup are separate from the app.
 
 ## Features
+
+- **Ask Me Anything (⌘K):** a conversation about the open repository in the report panel's Ask tab (a fourth tab on iPhone). Each question selects the most relevant files; answers cite `path:line`, and follow-up questions include the recent conversation. Pick the answering model in the tab; conversations are saved per repository.
+- **Mermaid diagrams:** ```` ```mermaid ```` blocks in Markdown files are drawn as diagrams (Mermaid 11.4.1, bundled; the source stays under a disclosure). Wide diagrams scroll sideways; pinch to zoom on the Mac.
+- **Web pages in the repository view:** web links in READMEs, reports and answers open inside OmniRepo (videos play in place), with **‹ README.md** to return to the file at the same scroll position. Links between files keep a history: Back (⌘[) and Forward (⌘]).
+- **Collapsible sidebar:** hide it with ⌃⌘S, and collapse its Repository, Recent and Models sections.
 
 - **Welcome screen with Discover:** a search field for links, `owner/repo`, `hf:` names, or usernames; recent repositories; and popular (active in the last 30 days) or new (created in the last 6 months) GitHub repositories for Agentic AI, Reinforcement Learning, World Models, VLA, VLM, Post-training, and Self-Improvement, plus trending Hugging Face models for world models, VLA, and VLM. Click a card to download it; right-click to open it in the browser or copy its URL. Results are cached for 3 hours, with a short built-in list when offline or rate-limited.
 - Native folder picker, or download by URL (`owner/repo` works for GitHub). Branch/tag links (`/tree/<branch>`) are honored.
@@ -27,7 +73,7 @@ The [official Ollama model](https://ollama.com/library/flint) is approximately 2
 - **Any local model:** pick from the models installed in Ollama, or download new ones in Settings › Local Models (same as `ollama pull`).
 - **Claude and GPT (optional):** use your Claude Pro/Max or ChatGPT subscription through the official `claude` and `codex` command-line tools (installed and signed in; Settings › Cloud Models shows whether each is signed in, with Sign In… to log in through Terminal), or Anthropic/OpenAI API keys stored in the Keychain (Settings › Cloud Models). The CLIs run with tools disabled in an empty temporary folder and a minimal environment. Anthropic API requests use adaptive thinking and server-side refusal fallback.
 - **Privacy:** local models keep everything on this Mac. Before the first cloud run on a repository, OmniRepo asks before sending excerpts (up to 60,000 characters) to Anthropic or OpenAI; the sidebar shows when any selected model runs in the cloud. Settings can clear these permissions.
-- **Repository side panel (⌥⌘0):** browse and filter the tracked files, read code with syntax highlighting (Python, Swift, JavaScript/TypeScript, Go, Rust, C/C++, Java/Kotlin, Ruby, shell, JSON, YAML, TOML, HTML/XML, CSS, SQL, Lua, R, Dockerfile) and line numbers, preview images, and view Markdown rendered as on GitHub (tables, images including raw `<img>` HTML, alerts, task lists, highlighted code blocks) or as source. The Markdown page runs with JavaScript disabled and a policy that blocks all network loads: repository images are embedded, remote images such as badges show their alt text, repository links open in the panel, and web links open in your browser. Every `path:line` citation in a report is a link that opens the file with those lines highlighted (only real tracked files are linked). Reveal in Finder and copy path, citation, or contents from the panel. `--file path:line` opens a file at launch.
+- **Repository side panel (⌥⌘0):** browse and filter the tracked files, read code with syntax highlighting (Python, Swift, JavaScript/TypeScript, Go, Rust, C/C++, Java/Kotlin, Ruby, shell, JSON, YAML, TOML, HTML/XML, CSS, SQL, Lua, R, Dockerfile) and line numbers, preview images, and view Markdown rendered as on GitHub (tables, images including raw `<img>` HTML, alerts, task lists, highlighted code blocks) or as source. The Markdown page runs with JavaScript disabled and a policy that blocks all network loads: repository images are embedded, remote images such as badges show their alt text, repository links open in the panel, and web links open in the repository view. Every `path:line` citation in a report is a link that opens the file with those lines highlighted (only real tracked files are linked). Reveal in Finder and copy path, citation, or contents from the panel. `--file path:line` opens a file at launch.
 - Reports excerpt coverage. Recent repositories are listed in the sidebar.
 - **Display:** change the text size (View › Bigger ⌘+ / Smaller ⌘− / Actual Size ⌘0, 80–200%), the reading font (San Francisco, New York serif, Rounded, Monospaced), and the appearance (Automatic, Light, Dark) in the View menu or Settings › Display. They apply to READMEs, code, and reports.
 - Reads tracked working-tree files without changing the checkout or executing its code.
@@ -87,6 +133,8 @@ CLANG_MODULE_CACHE_PATH="$PWD/.build/clang-cache" \
 SWIFTPM_MODULECACHE_OVERRIDE="$PWD/.build/swift-cache" \
 swift test --disable-sandbox
 ```
+
+Package a universal, ad-hoc-signed installer as `dist/OmniRepo-<version>.dmg` with `./scripts/make-dmg.sh <version>`.
 
 Open `Package.swift` in Xcode to develop. `Sources/RepoCore` contains repository loading and the Ollama streaming client; `Sources/OmniRepo` contains the UI; `Sources/OmniRepoMCP` contains the MCP server. The build script creates an ad-hoc signed local app, not a notarized distribution release.
 
